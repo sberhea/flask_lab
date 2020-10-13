@@ -9,16 +9,22 @@ from flask import Flask, request
 app = Flask(__name__)
 
 AWESOMENESS = [
-    'awesome', 'terrific', 'fantastic', 'neato', 'fantabulous', 'wowza',
-    'oh-so-not-meh', 'brilliant', 'ducky', 'coolio', 'incredible',
-    'wonderful', 'smashing', 'lovely']
+    'awesome', 'terrific', 'fantastic']
 
+DISS = [
+    'awful', 'horrible', 'not-so-great']
 
 @app.route('/')
 def start_here():
     """Home page."""
 
-    return "<!doctype html><html>Hi! This is the home page.</html>"
+    return """
+    <!doctype html>
+    <html>
+    <p>Hi! This is the home page.</p>
+    <a href="/hello"> Hello page </a>
+    </html>
+    """
 
 
 @app.route('/hello')
@@ -35,12 +41,38 @@ def say_hello():
         <h1>Hi There!</h1>
         <form action="/greet">
           What's your name? <input type="text" name="person">
-          <input type="submit" value="Submit">
+          </br>
+          <label for=compliments">Choose a Compliment:</label>
+        <select name = "compliments" id = "compliments">
+          <option value="awesome">Awesome</option>
+          <option value="terrific">Terrific</option>
+          <option value="fantastic">Fantastic</option>
+        </select>
+        <input type="submit" value="Submit">
         </form>
+        <button><a href="/diss">Want a diss instead?</a></button>
       </body>
     </html>
     """
 
+@app.route('/diss')
+def diss_person():
+  """Diss user"""
+  # player = request.args.get("person")
+  
+  diss = choice(DISS)
+
+  return """
+  <!doctype html>
+  <html>
+    <head>
+      <title>A Diss</title>
+    </head>
+    <body>
+      Hi, I think you're {}!
+    </body>
+  </html>
+  """.format(diss)
 
 @app.route('/greet')
 def greet_person():
@@ -48,7 +80,7 @@ def greet_person():
 
     player = request.args.get("person")
 
-    compliment = choice(AWESOMENESS)
+    compliment = request.args.get("compliments")
 
     return """
     <!doctype html>
